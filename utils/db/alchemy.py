@@ -13,6 +13,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy.exc import SQLAlchemyError
 from data.config import DB_URI
+import json 
 
 engine = create_engine(DB_URI)
 Base = declarative_base()
@@ -31,6 +32,13 @@ class Channels(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     cid = Column(String, default="None", unique=True)
 
+class Tests(Base):
+    __tablename__ = "tests"
+    id = Column(Integer,primary_key=True,autoincrement=True)
+    owner = Column(BigInteger)
+    answer = Column(String)
+    participants = Column(String)
+    status = Column(String, default="Open")
 
 Base.metadata.create_all(engine)
 
@@ -66,6 +74,40 @@ def create_user(cid):
     finally:
         session.close()
 
+def create_test(owner,answer):
+    try:
+        test = Tests(owner=owner,answer=answer,participants="{}")
+        session.add(test)
+        session.commit()
+        return test.id
+    except SQLAlchemyError as e:
+        session.rollback()
+    finally:
+        session.close()
+
+def get_test(id):
+    try:
+        x = session.query(Tests).filter_by(id=int(id)).first()
+        return x
+    finally:
+        session.close()
+    
+def change_test_info(id,type_data,value):
+    try:
+        x = session.query(Tests).filter_by(id=int(id)).first()
+
+        if type_data == "status":
+            x.status = value 
+        elif type_data == "participant":
+            ll = json.loads(x.participants)
+            ll.update(value)
+            x.participants = json.dumps(ll)
+        session.commit()
+    except SQLAlchemyError as e:
+        session.rollback()
+        print('CHANGE TEST | ERROR:',e)
+    finally:
+        session.close()
 
 def get_info(cid, type_data):
     try:

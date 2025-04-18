@@ -14,4 +14,4 @@ async def do_start(message: types.Message):
     # full_name = message.from_user.full_name
     # username = message.from_user.username
     create_user(cid=message.chat.id)
-    await message.answer(f"Quyidagilardan birini tanlang! 👇",reply_keyboard=home_key)
+    await message.answer(f"Quyidagilardan birini tanlang! 👇",reply_markup=home_key)

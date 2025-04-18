@@ -144,7 +144,7 @@ async def func_add_channel_process(message: types.Message, state: FSMContext):
             put_channel(channel=message.text)
             await bot.send_message(
                 chat_id=message.chat.id,
-                text=f"@{message.text} majburiy kanallar ro'yxatiga qo'shildi ✅",
+                text=f"{message.text} majburiy kanallar ro'yxatiga qo'shildi ✅",
             )
         except Exception as error:
             logging.info(f"Set Channel -- {error}")

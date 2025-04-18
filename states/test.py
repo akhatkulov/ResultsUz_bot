@@ -6,3 +6,8 @@ class AdminState(StatesGroup):
     ask_ad_content = State()
     Add_Channel = State()
     Delete_Channel = State()
+
+class UserState(StatesGroup):
+    add_test = State()
+    pass_test = State()
+    close_test = State()
