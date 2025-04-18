@@ -23,12 +23,13 @@ router = Router()
 
 
 @router.message(Command("admin"), IsBotAdminFilter())
-async def admin_panel(msg: types.Message):
+async def admin_panel(msg: types.Message,state:FSMContext):
     await bot.send_message(
         chat_id=msg.chat.id,
         text="Salom, Admin hush kelibsiz",
         reply_markup=admin_buttons,
     )
+    await state.clear()
 
 
 @router.message(Command("list_admins"), IsBotAdminFilter())
