@@ -97,12 +97,14 @@ async def close_test_state(msg: types.Message,state:FSMContext):
                 
                 base = json.loads(test.participants)
                 users = sorted(base,reverse=True)
+                i = 1
                 for user in users:
                     user_cid = await bot.get_chat(user)
                     first_name = user_cid.first_name if user_cid.first_name else ""
                     last_name = user_cid.last_name if user_cid.last_name else ""
-                    user_title = f"{first_name} {last_name}".strip()
-                    report+= f"{user_title} - ✅{base[user]} ❌{len(test.answer)-int(base[user])}\n"
+                    user_title = f" {first_name} {last_name}".strip()
+                    report+= f"{i}. {user_title} - ✅{base[user]} ❌{len(test.answer)-int(base[user])}\n"
+                    i+=1
                 print(report)
                 await msg.answer(report)
 
@@ -119,12 +121,14 @@ async def close_test_state(msg: types.Message,state:FSMContext):
                 
                 base = json.loads(test.participants)
                 users = sorted(base,reverse=True)
+                i = 1
                 for user in users:
                     user_cid = await bot.get_chat(user)
                     first_name = user_cid.first_name if user_cid.first_name else ""
                     last_name = user_cid.last_name if user_cid.last_name else ""
                     user_title = f"{first_name} {last_name}".strip()
-                    report+= f"{user_title} - ✅{base[user]} ❌{len(test.answer)-int(base[user])}\n"
+                    report+= f"{i}. {user_title} - ✅{base[user]} ❌{len(test.answer)-int(base[user])}\n"
+                    i+=1
                 print(report)
                 await msg.answer(report)
 
