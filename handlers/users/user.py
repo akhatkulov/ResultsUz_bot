@@ -34,12 +34,20 @@ async def add_test_state(msg: types.Message,state:FSMContext):
     await state.clear()
 
 @router.callback_query(F.data == "pass_test")
-async def pass_test(call: types.CallbackQuery,state:FSMContext):
-    await call.message.answer("Testga quyidagicha javob yuboring:\n\n<b>tartib raqam#harflar</b>")
+async def add_test(call: types.CallbackQuery,state:FSMContext):
+    await call.message.answer("F.I.SHni yuboring\n<b>Namuna: Axatkulov Mexroj Sehroj o'g'li</b>")
+    await state.set_state(UserState.get_name)
+
+@router.message(UserState.get_name)
+async def get_name(msg: types.CallbackQuery, state: FSMContext):
+    await state.update_data(name=msg.text)
+    await msg.answer("Testga quyidagicha javob yuboring:\n\n<b>tartib raqam#harflar</b>")
     await state.set_state(UserState.pass_test)
 
 @router.message(UserState.pass_test)
 async def pass_test_state(msg: types.Message, state: FSMContext):
+    data_state = await state.get_data()
+    name = data_state.get("name")
     async def invalid_format():
         return await msg.answer(
             "🚫Javobni noto'g'ri formatda berdingiz. Javoblarni quyidagi formatda jo'nating:\n"
@@ -77,7 +85,7 @@ async def pass_test_state(msg: types.Message, state: FSMContext):
         f"❌ Noto'g'ri topilganlar:\n➖ {','.join(map(str, res['false']))}"
     )
     await msg.answer(report, reply_markup=home_key)
-    change_test_info(id=int(code),type_data="participant",value={msg.chat.id:len(res['true'])})
+    change_test_info(id=int(code),type_data="participant",value={name:len(res['true'])})
     await state.clear()
 
 
@@ -99,11 +107,7 @@ async def close_test_state(msg: types.Message,state:FSMContext):
                 users = sorted(base,reverse=True)
                 i = 1
                 for user in users:
-                    user_cid = await bot.get_chat(user)
-                    first_name = user_cid.first_name if user_cid.first_name else ""
-                    last_name = user_cid.last_name if user_cid.last_name else ""
-                    user_title = f" {first_name} {last_name}".strip()
-                    report+= f"{i}. {user_title} - ✅{base[user]} ❌{len(test.answer)-int(base[user])}\n"
+                    report+= f"{i}. {user} - ✅{base[user]} ❌{len(test.answer)-int(base[user])}\n"
                     i+=1
                 print(report)
                 await msg.answer(report)
@@ -123,11 +127,7 @@ async def close_test_state(msg: types.Message,state:FSMContext):
                 users = sorted(base,reverse=True)
                 i = 1
                 for user in users:
-                    user_cid = await bot.get_chat(user)
-                    first_name = user_cid.first_name if user_cid.first_name else ""
-                    last_name = user_cid.last_name if user_cid.last_name else ""
-                    user_title = f"{first_name} {last_name}".strip()
-                    report+= f"{i}. {user_title} - ✅{base[user]} ❌{len(test.answer)-int(base[user])}\n"
+                    report+= f"{i}. {user} - ✅{base[user]} ❌{len(test.answer)-int(base[user])}\n"
                     i+=1
                 print(report)
                 await msg.answer(report)

@@ -11,3 +11,4 @@ class UserState(StatesGroup):
     add_test = State()
     pass_test = State()
     close_test = State()
+    get_name = State()
