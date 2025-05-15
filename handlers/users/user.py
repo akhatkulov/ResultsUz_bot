@@ -7,6 +7,7 @@ from utils.helper.func import test_checker
 from utils.db.alchemy import get_test,create_test,change_test_info
 import json
 from loader import bot
+from data.config import ADMIN
 router = Router()
 
 
@@ -84,6 +85,19 @@ async def pass_test_state(msg: types.Message, state: FSMContext):
         f".......................................... \n"
         f"❌ Noto'g'ri topilganlar:\n➖ {','.join(map(str, res['false']))}"
     )
+
+
+    report_for_admin = (
+        f"{name} bergan javoblar qabul qilindi. Natijangiz quyidagicha:\n\n"
+        f"✅ To'g'ri javoblar: {len(res['true'])} ta\n"
+        f"❌ Noto'g'ri javoblar: {len(res['false'])} ta\n"
+        f".......................................... \n"
+        f"✅ To'g'ri topilganlar:\n➖ {','.join(map(str, res['true']))}\n"
+        f".......................................... \n"
+        f"❌ Noto'g'ri topilganlar:\n➖ {','.join(map(str, res['false']))}"
+    )
+
+    await bot.send_message(chat_id=test.owner,text=report_for_admin)
     await msg.answer(report, reply_markup=home_key)
     change_test_info(id=int(code),type_data="participant",value={name:len(res['true'])})
     await state.clear()

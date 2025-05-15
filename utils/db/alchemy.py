@@ -91,7 +91,7 @@ def get_test(id):
         return x
     finally:
         session.close()
-    
+        
 def change_test_info(id,type_data,value):
     try:
         x = session.query(Tests).filter_by(id=int(id)).first()
